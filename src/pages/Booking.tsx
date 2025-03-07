@@ -9,6 +9,13 @@ interface AvailableSlot {
     disponivel: boolean;
 }
 
+const servicos: Record<string, string> = {
+  "1": "Classic Haircut",
+  "2": "Beard Trim",
+  "3": "Complete Package"
+}
+
+
 const Booking: React.FC = () => {
     const { serviceId } = useParams<{ serviceId: string }>();
 
@@ -50,12 +57,13 @@ const Booking: React.FC = () => {
         }
 
         const agendamento = {
-            nome: clientName,
-            telefone: phone,
-            data: selectedDate,
-            hora: selectedTime,
-            servico: serviceId || 'Serviço não informado'
-        };
+          nome: clientName,
+          telefone: phone,
+          data: selectedDate,
+          hora: selectedTime,
+          servico: servicos[String(serviceId)]
+      };
+      
 
         try {
             const response = await fetch('http://localhost:8080/agendamentos', {
