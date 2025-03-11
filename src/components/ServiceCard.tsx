@@ -20,21 +20,29 @@ export default function ServiceCard({ service }: ServiceCardProps) {
       <div className="p-6">
         <h3 className="text-xl font-semibold mb-2">{service.name}</h3>
         <p className="text-gray-600 mb-4">{service.description}</p>
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center text-gray-700">
-            <Clock className="h-4 w-4 mr-1" />
-            <span>{service.duration} min</span>
-          </div>
-          <div className="flex items-center text-gray-700">
+        
+        <div className="flex items-center text-gray-700 mb-2">
+          <Clock className="h-4 w-4 mr-1" />
+          <span>{service.duration} min</span>
+        </div>
+
+        {/* Preços exibindo ambas opções */}
+        <div className="text-gray-700 mb-4">
+          <div className="flex items-center">
             <DollarSign className="h-4 w-4 mr-1" />
-            <span>{service.price}</span>
+            <span><strong>Terça a Quinta:</strong> ${service.priceWeek}</span>
+          </div>
+          <div className="flex items-center">
+            <DollarSign className="h-4 w-4 mr-1" />
+            <span><strong>Sexta e Sábado:</strong> ${service.priceWeekend}</span>
           </div>
         </div>
+
         <button
           onClick={() => navigate(`/booking/${service.id}`)}
           className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
         >
-          Book Now
+          Agendar Agora
         </button>
       </div>
     </div>
