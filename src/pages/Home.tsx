@@ -5,6 +5,9 @@ import { motion } from "framer-motion";
 import barber1 from "../img/barbearia1.png";
 import barber2 from "../img/barbearia2.png";
 import barber3 from "../img/barbearia3.png";
+import barber4 from "../img/barbearia4.png";
+import barber5 from "../img/barbearia5.png";
+import barber6 from "../img/barbearia6.png";
 
 export default function Home() {
 
@@ -26,7 +29,7 @@ export default function Home() {
     },
   ];
 
-  const images = [barber1, barber2, barber3];
+  const images = [barber1, barber2, barber3, barber4, barber5, barber6];
 
   return (
     <div>
