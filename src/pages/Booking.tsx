@@ -23,7 +23,36 @@ const Booking: React.FC = () => {
     const [clientName, setClientName] = useState('');
     const [phone, setPhone] = useState('');
     const [message, setMessage] = useState('');
+    const [valorPix, setValorPix] = useState<number | null>(null);
+    const [pixCode, setPixCode] = useState<string | null>(null);
+    const [isPaying, setIsPaying] = useState(false);
+    const [pixUrl, setPixUrl] = useState<string | null>(null); // URL do QR Code Pix real
 
+    // Função para calcular o preço do serviço considerando a data selecionada
+    const calcularPrecoServico = (servico: string, data: string) => {
+        const dayOfWeek = new Date(data).getDay();
+
+        if (servico === "Corte Masculino") {
+            return dayOfWeek >= 2 && dayOfWeek <= 4 ? 35 : 40;
+        } else if (servico === "Barba Simples") {
+            return 40;
+        } else if (servico === "Corte Masculino + Barba Simples") {
+            return 60;
+        }
+
+        return 0;
+    };
+
+    // Calcula automaticamente 50% do valor do serviço para o Pix
+    useEffect(() => {
+        if (serviceId) {
+            const servicoNome = servicos[String(serviceId)];
+            const precoMetade = calcularPrecoServico(servicoNome, selectedDate) / 2;
+            setValorPix(precoMetade);
+        }
+    }, [selectedDate, serviceId]);
+
+    // Buscar horários disponíveis
     useEffect(() => {
         const fetchAvailableSlots = async () => {
             try {
@@ -40,16 +69,17 @@ const Booking: React.FC = () => {
                 console.error('Erro ao buscar horários:', error);
                 setMessage('Erro ao buscar horários disponíveis.');
             }
-        };        
+        };
         fetchAvailableSlots();
     }, [selectedDate]);
 
+    // Função para confirmar agendamento e gerar QR Code do Pix
     const handleBooking = async () => {
         if (!selectedTime || !clientName || !phone) {
             setMessage('Preencha todos os campos.');
             return;
         }
-
+    
         const agendamento = {
             nome: clientName,
             telefone: phone,
@@ -57,31 +87,38 @@ const Booking: React.FC = () => {
             hora: selectedTime,
             servico: servicos[String(serviceId)]
         };
-
+    
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/agendamentos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(agendamento)
-            });            
-
+            });
+    
             if (response.ok) {
-                setMessage('✅ Agendamento realizado com sucesso!');
-                setSelectedTime(null);
-                setClientName('');
-                setPhone('');
+                const precoMetade = valorPix;
+
+                const pixResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/gerar-pix`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ valor: precoMetade })
+                });
+    
+                const pixData = await pixResponse.json();
+                setPixCode(pixData.qrCode);
+                setIsPaying(true);
             } else {
                 setMessage('⛔ Horário já reservado ou erro ao agendar.');
             }
         } catch (error) {
             setMessage('⚠️ Erro de conexão com o servidor.');
         }
-    };
+    };    
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
             <h1 className="text-2xl font-bold text-center mb-4">Agendar Horário</h1>
-            
+
             <div className="mb-4">
                 <label className="block font-semibold mb-1">Data:</label>
                 <div className="flex items-center border p-2 rounded-md">
@@ -139,12 +176,20 @@ const Booking: React.FC = () => {
                 </div>
             </div>
 
-            <button
-                onClick={handleBooking}
-                className="w-full bg-green-500 text-white py-3 rounded-md font-semibold hover:bg-green-600 transition-all"
-            >
-                Confirmar Agendamento
-            </button>
+            {isPaying ? (
+                <div className="mt-4 p-4 border rounded-md bg-gray-100">
+                    <p className="text-lg font-semibold">💰 Valor do Pix: R$ {valorPix?.toFixed(2)}</p>
+                    {pixUrl && <img src={pixUrl} alt="QR Code Pix" className="mx-auto my-4" />}
+                    <p className="text-center">Escaneie o QR Code para pagar</p>
+                </div>
+            ) : (
+                <button
+                    onClick={handleBooking}
+                    className="w-full bg-green-500 text-white py-3 rounded-md font-semibold hover:bg-green-600 transition-all"
+                >
+                    Confirmar Agendamento
+                </button>
+            )}
 
             {message && <p className="mt-4 text-center text-red-500">{message}</p>}
         </div>
