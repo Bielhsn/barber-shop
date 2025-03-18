@@ -13,17 +13,17 @@ export default function Home() {
 
   const services = [
     {
-      icon: <Scissors size={40} className="text-gray-800 mb-4" />,
+      icon: <Scissors size={40} className="text-[#d9a371] mb-4" />,
       title: "Corte Masculino",
       description: "Cortes modernos e tradicionais para todos os estilos."
     },
     {
-      icon: <Users size={40} className="text-gray-800 mb-4" />,
+      icon: <Users size={40} className="text-[#d9a371] mb-4" />,
       title: "Barba",
       description: "Modelagem e alinhamento para uma barba impecável."
     },
     {
-      icon: <Sparkles size={40} className="text-gray-800 mb-4" />,
+      icon: <Sparkles size={40} className="text-[#d9a371] mb-4" />,
       title: "Corte + Barba",
       description: "Pacote completo para um visual renovado e sofisticado."
     },
@@ -41,14 +41,14 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/50"></div> {/* Camada escura para contraste */}
 
         <div className="relative text-center text-white px-6">
-          <h1 className="text-5xl font-bold mb-4">LM Barbearia</h1>
+          <h1 className="text-5xl font-bold mb-4 text-[#d9a371]">Barbearia Barcellona</h1>
           <p className="text-xl mb-6">
             Estilo e precisão para o seu melhor visual.
           </p>
           <Link
             to="/services"
             className="bg-white text-black px-8 py-3 rounded-md font-semibold text-lg 
-      shadow-lg transition-transform transform hover:scale-105 hover:bg-gray-200"
+      shadow-lg transition-transform transform hover:scale-105 hover:bg-[#d9a371]"
           >
             Agendar Agora
           </Link>
@@ -66,14 +66,14 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-bold mb-6 text-gray-900">Sobre a LM Barbearia</h2>
+            <h2 className="text-4xl font-bold mb-6 text-[#d9a371]">Sobre a Barbearia Barcellona</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
               Nossa barbearia oferece uma experiência única e sofisticada, combinando tradição com as últimas tendências do mercado.
               Profissionais altamente qualificados garantem que você saia com o melhor corte e barba possíveis.
             </p>
             <a href="https://wa.me/5511966526732" target="_blank" rel="noreferrer">
               <button className="mt-4 px-6 py-3 bg-black text-white font-semibold rounded-lg shadow-md 
-        transition-transform transform hover:scale-105 hover:bg-gray-800">
+        transition-transform transform hover:scale-105 hover:bg-[#d9a371]">
                 Entre em Contato
               </button>
             </a>
@@ -88,9 +88,9 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <img
-              src="/src/img/LM_Barbearia.png"
+              src="/src/img/logo_barcellona_transparente.png"
               alt="Sobre a Barbearia"
-              className="rounded-lg w-100 transform transition-transform hover:scale-105"
+              className="rounded-lg w-100 h-80 ml-60 mr-40 transform transition-transform hover:scale-105"
             />
           </motion.div>
         </div>

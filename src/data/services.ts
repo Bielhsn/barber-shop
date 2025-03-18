@@ -6,7 +6,7 @@ export const services: Service[] = [
     name: 'Corte Masculino',
     description: 'Corte tradicional masculino com tesoura e máquina',
     duration: 30,
-    priceWeek: 35, // Preço de terça a quinta
+    priceWeek: 40, // Preço de terça a quinta
     priceWeekend: 40, // Preço de sexta a domingo
     image: 'https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?auto=format&fit=crop&q=80&w=800'
   },

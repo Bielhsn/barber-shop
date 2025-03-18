@@ -4,7 +4,7 @@ export function Footer() {
         {/* Centralização do texto principal */}
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col items-center space-y-4 font-extrabold">
           <p className="text-sm text-center">
-            © {new Date().getFullYear()} LM Barbearia. Todos os direitos reservados.
+            © {new Date().getFullYear()} Barbearia Barcellona. Todos os direitos reservados.
           </p>
         </div>
   

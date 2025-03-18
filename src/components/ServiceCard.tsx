@@ -30,17 +30,13 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         <div className="text-gray-700 mb-4">
           <div className="flex items-center">
             <DollarSign className="h-4 w-4 mr-1" />
-            <span><strong>Terça a Quinta:</strong> ${service.priceWeek}</span>
-          </div>
-          <div className="flex items-center">
-            <DollarSign className="h-4 w-4 mr-1" />
-            <span><strong>Sexta e Sábado:</strong> ${service.priceWeekend}</span>
+            <span>R${service.priceWeek}</span>
           </div>
         </div>
 
         <button
           onClick={() => navigate(`/booking/${service.id}`)}
-          className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition-colors"
+          className="w-full bg-black text-white py-2 rounded-md hover:bg-[#d9a371] transition-colors"
         >
           Agendar Agora
         </button>
