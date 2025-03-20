@@ -114,9 +114,9 @@ const Booking: React.FC = () => {
             setMessage("⚠️ Preencha todos os campos antes de confirmar.");
             return;
         }
-
+    
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/confirmar-agendamento`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/confirmar-agendamento`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -126,12 +126,12 @@ const Booking: React.FC = () => {
                     hora: selectedTime,
                     servico: servicos[String(serviceId)]?.nome || "Serviço desconhecido",
                     barbeiro: selectedBarber,
-                    pago: true // 🔹 Marca como pago automaticamente
+                    pago: false
                 })
             });
-
+    
             if (response.ok) {
-                setMessage("✅ Agendamento confirmado automaticamente!");
+                setMessage("✅ Agendamento salvo com sucesso!");
             } else {
                 setMessage("❌ Erro ao confirmar agendamento.");
             }
@@ -140,6 +140,7 @@ const Booking: React.FC = () => {
             setMessage("❌ Erro de conexão com o servidor.");
         }
     };
+    
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
