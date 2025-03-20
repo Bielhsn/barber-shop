@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { TimeSlot } from '../types';
-import { Calendar, User, Phone, Scissors, CreditCard, Clipboard } from 'lucide-react';
+import { Calendar, User, Phone, Scissors } from 'lucide-react';
+import leandroPix from '../img/leandro-pix.png';
+import vitorPix from '../img/vitor-pix.png';
+import leandroPix30 from '../img/leandro-pix-30.png';
+import vitorPix30 from '../img/vitor-pix-30.png';
 
 interface AvailableSlot {
     hora: string;
@@ -27,13 +31,63 @@ const Booking: React.FC = () => {
     const [phone, setPhone] = useState('');
     const [selectedBarber, setSelectedBarber] = useState<string | null>(null);
     const [message, setMessage] = useState('');
-    const [valorPix, setValorPix] = useState<number>(20); // 🔹 Valor de 50% do serviço
+    const [loading, setLoading] = useState(true); // 🔹 Bloqueia o botão no início
     const [pixCode, setPixCode] = useState<string | null>(null);
-    const [pixUrl, setPixUrl] = useState<string | null>(null);
-    const [isPaid, setIsPaid] = useState(false); // 🔹 Estado do pagamento
-    const [pagamentoConfirmado, setPagamentoConfirmado] = useState(false);
 
-    // Buscar horários disponíveis
+    // **🔹 Obtém o código PIX estático**
+    const pixCodigos: Record<string, string> = {
+        "leandro-20": "00020126360014BR.GOV.BCB.PIX0114+5511966526732520400005303986540520.005802BR5907Leandro6009Sao paulo62170513PAGAMENTO123D6304FA9F",
+        "leandro-30": "00020126360014BR.GOV.BCB.PIX0114+5511966526732520400005303986540530.005802BR5907Leandro6009Sao paulo62170513PAGAMENTO123D630441D0",
+        "vitor-20": "00020126360014BR.GOV.BCB.PIX0114+5583998017216520400005303986540520.005802BR5905Vitor6009Sao paulo62170513PAGAMENTO123D63040C14",
+        "vitor-30": "00020126350014BR.GOV.BCB.PIX0113+558398017216520400005303986540530.005802BR5905Vitor6009Sao paulo62170513PAGAMENTO123D63044BB4"
+    };
+
+    const getPixImage = () => {
+        if (!selectedBarber || !serviceId) return null;
+
+        const servicoSelecionado = servicos[String(serviceId)];
+        if (!servicoSelecionado) return null;
+
+        const valorMetade = servicoSelecionado.preco / 2;
+        return selectedBarber === "Leandro" ? (valorMetade === 20 ? leandroPix : leandroPix30) : (valorMetade === 20 ? vitorPix : vitorPix30);
+    };
+
+    const getPixCodigo = () => {
+        if (!selectedBarber || !serviceId) return null;
+        const servicoSelecionado = servicos[String(serviceId)];
+        if (!servicoSelecionado) return null;
+
+        const valorMetade = servicoSelecionado.preco / 2;
+        const chave = `${selectedBarber.toLowerCase()}-${valorMetade}`;
+        return pixCodigos[chave] || null;
+    };
+
+    const handleCopyPixCodigo = () => {
+        const codigo = getPixCodigo();
+        if (codigo) {
+            navigator.clipboard.writeText(codigo);
+            setMessage("✅ Código PIX copiado com sucesso!");
+        } else {
+            setMessage("⚠️ Nenhum código PIX disponível.");
+        }
+    };
+
+    // **🔹 Inicia a contagem de 20 segundos ao selecionar um barbeiro**
+    useEffect(() => {
+        if (selectedBarber) {
+            console.log("⏳ Iniciando contagem de 20 segundos...");
+            setLoading(true);
+
+            const timer = setTimeout(() => {
+                console.log("✅ Tempo expirado! Liberando botão.");
+                setLoading(false); // 🔹 Libera o botão automaticamente após 20s
+            }, 20000);
+
+            return () => clearTimeout(timer); // 🔹 Evita bugs se o usuário mudar de página
+        }
+    }, [selectedBarber]); // 🔹 O efeito roda sempre que um barbeiro for selecionado
+
+    // **🔹 Buscar horários disponíveis**
     useEffect(() => {
         const fetchAvailableSlots = async () => {
             if (!selectedBarber) return;
@@ -55,114 +109,37 @@ const Booking: React.FC = () => {
         fetchAvailableSlots();
     }, [selectedDate, selectedBarber]);
 
-    useEffect(() => {
-        const verificarPagamento = async () => {
-            if (!phone) return;
-    
-            try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/agendamentos/verificar-pagamento?telefone=${phone}`);
-                const data = await response.json();
-    
-                if (response.ok && data.pago) {
-                    console.log("✅ Pagamento confirmado no banco.");
-                    setIsPaid(true);
-                    setMessage("✅ Pagamento confirmado! Agora você pode agendar.");
-                } else {
-                    console.log("🚨 Pagamento ainda não confirmado.");
-                    setIsPaid(false);
-                    setMessage("");
-                }
-            } catch (error) {
-                console.error("Erro ao verificar pagamento:", error);
-                setIsPaid(false);
-                setMessage("");
-            }
-        };
-    
-        // 🔹 Verifica o pagamento a cada 10 segundos
-        const interval = setInterval(verificarPagamento, 10000);
-    
-        return () => clearInterval(interval);
-    }, [phone]);            
+    const confirmarAgendamento = async () => {
+        if (!clientName || !phone || !selectedBarber || !selectedTime || !selectedDate) {
+            setMessage("⚠️ Preencha todos os campos antes de confirmar.");
+            return;
+        }
 
-    // Função para gerar PIX via Mercado Pago
-    const handlePixPayment = async () => {
-        if (!selectedTime || !clientName || !phone || !selectedBarber) {
-            setMessage('Preencha todos os campos antes de pagar.');
-            return;
-        }
-    
-        const servicoSelecionado = servicos[String(serviceId)];
-        if (!servicoSelecionado) {
-            setMessage('Erro ao identificar o serviço.');
-            return;
-        }
-    
-        const valorMetade = servicoSelecionado.preco / 2;
-    
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gerar-pix`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ valor: valorMetade, telefone: phone })
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/confirmar-agendamento`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nome: clientName,
+                    telefone: phone,
+                    data: selectedDate,
+                    hora: selectedTime,
+                    servico: servicos[String(serviceId)]?.nome || "Serviço desconhecido",
+                    barbeiro: selectedBarber,
+                    pago: true // 🔹 Marca como pago automaticamente
+                })
             });
-    
-            const pixData = await response.json();
-            setPixCode(pixData.qrImage);
-            setPixUrl(pixData.qrCode);
-            setMessage("Pagamento pendente. Escaneie o QR Code para pagar.");
-        } catch (error) {
-            setMessage('⚠️ Erro ao gerar PIX.');
-        }
-    };
 
-    // Copiar código PIX
-    const handleCopyPix = () => {
-        if (pixCode) {
-            navigator.clipboard.writeText(pixCode);
-            setMessage("Código PIX copiado!");
-        }
-    };
-
-    // Função para confirmar agendamento após o pagamento
-    const handleBooking = async () => {
-        if (!isPaid) {
-            setMessage('⚠️ Você precisa pagar antes de confirmar o agendamento.');
-            return;
-        }
-    
-        if (!selectedBarber) {
-            setMessage('⚠️ Escolha um barbeiro antes de confirmar o agendamento.');
-            return;
-        }
-    
-        const agendamento = {
-            nome: clientName,
-            telefone: phone,
-            data: selectedDate,
-            hora: selectedTime,
-            servico: servicos[String(serviceId)].nome, // 🔹 Pegando apenas o nome do serviço
-            barbeiro: selectedBarber, // 🔹 Garantindo que o barbeiro está sendo enviado
-        };
-    
-        console.log("📨 Enviando agendamento:", agendamento); // 🔹 Debug
-    
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/agendamentos`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(agendamento),
-            });
-    
             if (response.ok) {
-                setMessage('✅ Agendamento confirmado com sucesso!');
+                setMessage("✅ Agendamento confirmado automaticamente!");
             } else {
-                setMessage('⛔ Horário já reservado ou erro ao agendar.');
+                setMessage("❌ Erro ao confirmar agendamento.");
             }
         } catch (error) {
-            setMessage('⚠️ Erro de conexão com o servidor.');
+            console.error("❌ Erro ao conectar com o backend:", error);
+            setMessage("❌ Erro de conexão com o servidor.");
         }
-    };       
+    };
 
     return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -236,13 +213,12 @@ const Booking: React.FC = () => {
                 {timeSlots.map((slot, index) => (
                     <button
                         key={index}
-                        className={`p-2 border rounded-md ${
-                            slot.available
-                                ? selectedTime === slot.time
-                                    ? "bg-blue-400 text-white"
-                                    : "bg-green-200 hover:bg-green-300"
-                                : "bg-gray-300 cursor-not-allowed"
-                        }`}
+                        className={`p-2 border rounded-md ${slot.available
+                            ? selectedTime === slot.time
+                                ? "bg-blue-400 text-white"
+                                : "bg-green-200 hover:bg-green-300"
+                            : "bg-gray-300 cursor-not-allowed"
+                            }`}
                         disabled={!slot.available}
                         onClick={() => setSelectedTime(slot.time)}
                     >
@@ -251,26 +227,38 @@ const Booking: React.FC = () => {
                 ))}
             </div>
 
-            {/* QR Code e código PIX */}
-            {pixCode && (
-    <div className="flex flex-col items-center mt-4">
-        <img src={`data:image/png;base64,${pixCode}`} alt="QR Code PIX" className="w-40 h-40" />
-        <p className="mt-2">QR Code PIX</p>
-    </div>
-)}
+            {/* QR Code PIX e código dentro do card */}
+            {selectedBarber && serviceId && (
+                <div className="flex flex-col items-center mt-4 bg-gray-100 p-4 rounded-lg shadow-md w-full">
+                    <img src={getPixImage()} alt="QR Code Pix" className="w-40 h-40" />
+                    <p className="mt-2 text-gray-700 font-semibold">Escaneie para pagar</p>
 
-{!isPaid ? (
-    <button onClick={handlePixPayment} className="w-full bg-yellow-500 text-white py-3 mt-4 rounded-md font-semibold">
-        Pagar 50% via PIX
-    </button>
-) : (
-    <button onClick={handleBooking} className="w-full bg-green-500 text-white py-3 mt-4 rounded-md font-semibold">
-        Confirmar Agendamento
-    </button>
-)}
+                    {/* Código Pix dentro do card */}
+                    <div className="w-full bg-gray-200 p-3 rounded-md mt-2 text-center text-gray-800 font-mono text-sm break-words">
+                        {getPixCodigo()}
+                    </div>
 
-{message && <p className="mt-4 text-center text-red-500">{message}</p>}
+                    {/* Botão para copiar código Pix */}
+                    <button
+                        onClick={handleCopyPixCodigo}
+                        className="bg-blue-500 text-white py-2 px-4 mt-2 rounded-md font-semibold hover:bg-blue-600 w-full"
+                    >
+                        Copiar Código PIX
+                    </button>
+                </div>
+            )}
 
+            {/* Botão de confirmar agendamento */}
+            <button
+                onClick={confirmarAgendamento}
+                className={`w-full py-3 mt-4 rounded-md font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 text-white hover:bg-green-600"
+                    }`}
+                disabled={loading} // 🔹 Fica bloqueado por 20 segundos
+            >
+                Confirmar Agendamento
+            </button>
+
+            {message && <p className="mt-4 text-center text-red-500">{message}</p>}
         </div>
     );
 };
