@@ -34,12 +34,12 @@ export default function ServiceCard({ service }: ServiceCardProps) {
           </div>
         </div>
 
-        <button
+        {/* <button
           onClick={() => navigate(`/booking/${service.id}`)}
           className="w-full bg-black text-white py-2 rounded-md hover:bg-[#d9a371] transition-colors"
         >
           Agendar Agora
-        </button>
+        </button> */}
       </div>
     </div>
   );
