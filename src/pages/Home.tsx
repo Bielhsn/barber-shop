@@ -36,7 +36,7 @@ export default function Home() {
       {/* Banner de Apresentação */}
       <div
         className="h-[600px] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: 'url("/src/img/banner.jpg")' }} // Substitua pela URL correta
+        style={{ backgroundImage: 'url("/public/img/banner.jpg")' }} // Substitua pela URL correta
       >
         <div className="absolute inset-0 bg-black/50"></div> {/* Camada escura para contraste */}
 
@@ -88,7 +88,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <img
-              src="/src/img/logo_barcellona_transparente.png"
+              src="/public/img/logo_barcellona_transparente.png"
               alt="Sobre a Barbearia"
               className="rounded-lg w-100 h-80 ml-60 mr-40 transform transition-transform hover:scale-105"
             />
