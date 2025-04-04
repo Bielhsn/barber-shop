@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { TimeSlot } from '../types';
 import { Calendar, User, Phone, Scissors } from 'lucide-react';
-import leandroPix from '../img/leandro-pix.png';
-import vitorPix from '../img/vitor-pix.png';
-import leandroPix30 from '../img/leandro-pix-30.png';
-import vitorPix30 from '../img/vitor-pix-30.png';
+import leandroPix from '../../public/img/leandro-pix.png';
+import vitorPix from '../../public/img/vitor-pix.png';
+import leandroPix30 from '../../public/img/leandro-pix-30.png';
+import vitorPix30 from '../../public/img/vitor-pix-30.png';
 
 interface AvailableSlot {
     hora: string;
