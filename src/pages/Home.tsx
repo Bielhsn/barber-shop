@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Scissors, Users, Sparkles } from 'lucide-react';
 import { motion } from "framer-motion";
-import barber1 from "../img/barbearia1.png";
-import barber2 from "../img/barbearia2.png";
-import barber3 from "../img/barbearia3.png";
-import barber4 from "../img/barbearia4.png";
-import barber5 from "../img/barbearia5.png";
-import barber6 from "../img/barbearia6.png";
+import barber1 from "../../public/img/barbearia1.png";
+import barber2 from "../../public/img/barbearia2.png";
+import barber3 from "../../public/img/barbearia3.png";
+import barber4 from "../../public/img/barbearia4.png";
+import barber5 from "../../public/img/barbearia5.png";
+import barber6 from "../../public/img/barbearia6.png";
 
 export default function Home() {
 
