@@ -2,12 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Scissors, Users, Sparkles } from 'lucide-react';
 import { motion } from "framer-motion";
-import barber1 from "../../public/img/barbearia1.png";
-import barber2 from "../../public/img/barbearia2.png";
-import barber3 from "../../public/img/barbearia3.png";
-import barber4 from "../../public/img/barbearia4.png";
-import barber5 from "../../public/img/barbearia5.png";
-import barber6 from "../../public/img/barbearia6.png";
+import barber1 from "/img/barbearia1.png";
+import barber2 from "/img/barbearia2.png";
+import barber3 from "/img/barbearia3.png";
+import barber4 from "/img/barbearia4.png";
+import barber5 from "/img/barbearia5.png";
+import barber6 from "/img/barbearia6.png";
 
 export default function Home() {
 
@@ -36,7 +36,7 @@ export default function Home() {
       {/* Banner de Apresentação */}
       <div
         className="h-[600px] bg-cover bg-center flex items-center justify-center relative"
-        style={{ backgroundImage: 'url("/public/img/banner.jpg")' }} // Substitua pela URL correta
+        style={{ backgroundImage: 'url("/img/banner.jpg")' }} // Substitua pela URL correta
       >
         <div className="absolute inset-0 bg-black/50"></div> {/* Camada escura para contraste */}
 
@@ -88,7 +88,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <img
-              src="/public/img/logo_barcellona_transparente.png"
+              src="/img/logo_barcellona_transparente.png"
               alt="Sobre a Barbearia"
               className="rounded-lg w-100 h-80 ml-60 mr-40 transform transition-transform hover:scale-105"
             />
