@@ -45,13 +45,13 @@ export default function Home() {
           <p className="text-xl mb-6">
             Estilo e precisão para o seu melhor visual.
           </p>
-          <Link
+          {/* <Link
             to="/services"
             className="bg-white text-black px-8 py-3 rounded-md font-semibold text-lg 
       shadow-lg transition-transform transform hover:scale-105 hover:bg-[#d9a371]"
           >
             Agendar Agora
-          </Link>
+          </Link> */}
         </div>
       </div>
 
