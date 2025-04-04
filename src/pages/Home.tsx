@@ -149,7 +149,7 @@ export default function Home() {
           <p className="text-gray-600 mb-8">Venha nos visitar! Estamos esperando por você.</p>
           <div className="w-full flex justify-center">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.1074883462907!2d-46.5997911236884!3d-23.492637578847184!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cef6014bc28aa7%3A0x9d0206786b3c6e4d!2sAv.%20J%C3%BAlio%20Buono%2C%20686%20-%20Vila%20Gustavo%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2002201-000!5e0!3m2!1spt-BR!2sbr!4v1741708505354!5m2!1spt-BR!2sbr"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.288716690167!2d-46.59523672549071!3d-23.48610805883025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cef5e2b2fd1089%3A0x34c5311937b883ad!2sAv.%20J%C3%BAlio%20Buono%2C%201547%20-%20Vila%20Gustavo%2C%20S%C3%A3o%20Paulo%20-%20SP%2C%2002201-000!5e0!3m2!1spt-BR!2sbr!4v1743788717300!5m2!1spt-BR!2sbr"
               width="100%"
               height="450"
               style={{ border: "0", borderRadius: "15px" }}
